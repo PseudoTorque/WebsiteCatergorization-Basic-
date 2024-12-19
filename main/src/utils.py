@@ -1,6 +1,6 @@
 """
 
-Utility functions for the WebsiteTopicDetection module.
+Utility functions for the WebsiteCatergorization module.
 
 """
 
@@ -8,11 +8,6 @@ from string import punctuation
 from requests import get
 from bs4 import BeautifulSoup
 from nltk.corpus import stopwords
-from spacy import load
-#from spacy.cli import download
-
-#download("en_core_web_sm")
-NLP = load("en_core_web_sm")
 
 def get_bytes_from_url(url: str, timeout: int = 10) -> bytes:
 
@@ -96,10 +91,6 @@ def clean_text(text: str) -> str:
     #remove newlines
     text = text.replace("\n", " ")
 
-    #remove punctuation
-    translator = str.maketrans('', '', punctuation)
-    text = text.translate(translator)
-
     #remove stopwords
     temp_stopwords = set(stopwords.words("english"))
     text = [word for word in text.split() if word not in temp_stopwords]
@@ -107,12 +98,11 @@ def clean_text(text: str) -> str:
     #remove whitespace
     text = [word for word in text if word.strip()]
 
-    #NLP using spacy
-    doc = NLP(" ".join(text))
-    text = [token.text for token in doc if not token.is_punct]
+    #remove punctuation
+    translator = str.maketrans('', '', punctuation+"—")
+    text = " ".join(text).translate(translator)
 
-    #join the text
-    return " ".join(text)
+    return text
 
 test = get_bytes_from_url("https://pulse.zerodha.com")
 #print(clean_html(test))
